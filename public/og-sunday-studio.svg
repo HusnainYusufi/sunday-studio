@@ -1,0 +1,37 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5EFE3" />
+      <stop offset="1" stop-color="#E9C170" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0.2" cy="0.2" r="0.8">
+      <stop stop-color="#C99232" stop-opacity="0.35" />
+      <stop offset="1" stop-opacity="0" />
+    </radialGradient>
+    <filter id="shadow" x="80" y="120" width="1040" height="390" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="32" stdDeviation="32" flood-color="#0F0C08" flood-opacity="0.25" />
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g filter="url(#shadow)">
+    <rect x="120" y="150" width="960" height="330" rx="42" fill="#0F0C08" fill-opacity="0.92"/>
+    <rect x="150" y="180" width="900" height="270" rx="32" fill="#12100C" stroke="#F5EFE3" stroke-opacity="0.08"/>
+  </g>
+  <text x="200" y="260" fill="#F5EFE3" font-family="'Inter', 'Geist', 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700">
+    Sunday Studio · Lahore
+  </text>
+  <text x="200" y="320" fill="#E9C170" font-family="'Inter', 'Geist', 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="600">
+    Largest infinity wall, cinema RGBWW lighting, concierge crew.
+  </text>
+  <text x="200" y="360" fill="#F5EFE3" font-family="'Inter', 'Geist', 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="500">
+    Build campaigns, music videos, podcasts, and luxury product films with unmatched control.
+  </text>
+  <rect x="200" y="390" width="220" height="54" rx="27" fill="#F5EFE3"/>
+  <text x="230" y="425" fill="#0F0C08" font-family="'Inter', 'Geist', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700">
+    Book the stage
+  </text>
+  <circle cx="940" cy="240" r="70" fill="#C99232" fill-opacity="0.75"/>
+  <circle cx="1000" cy="330" r="52" fill="#F5EFE3" fill-opacity="0.85"/>
+  <circle cx="940" cy="330" r="110" fill="none" stroke="#F5EFE3" stroke-opacity="0.15" stroke-width="22"/>
+</svg>
