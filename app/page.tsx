@@ -4,6 +4,8 @@ import Link from "next/link";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 
+import { CursorGlow } from "./components/CursorGlow";
+
 const spaces = [
   {
     title: "Infinity Studio",
@@ -91,21 +93,21 @@ const slides = [
     detail: "105 ft seamless run with 50 ft by 35 ft stage area, 20 ft height, and 50 ft clearance.",
     badge: "New paint before every booking",
     tint: "from-white/20 via-white/10 to-white/0",
-    image: "/slides/infinity.svg",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
   },
   {
     title: "Film-Ready Amenities",
     detail: "Makeup room, changing room, lounge, iron and stand, ice boxes, hangers, and studio assistant options.",
     badge: "Quiet HVAC & haze-friendly",
     tint: "from-amber-200/30 via-orange-100/10 to-white/5",
-    image: "/slides/amenities.svg",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1600&q=80",
   },
   {
     title: "Power & Backup",
     detail: "Generous electricity (ex-WAPDA) with generators from 25 kVA to 75 kVA available with operator.",
     badge: "Fuel excluded; call for rates",
     tint: "from-cyan-200/30 via-blue-100/10 to-white/5",
-    image: "/slides/power.svg",
+    image: "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=1600&q=80",
   },
 ];
 
@@ -135,33 +137,6 @@ function ScrollProgressBar() {
         style={{ width: `${progress}%` }}
       />
     </div>
-  );
-}
-
-function CursorGlow() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [variant, setVariant] = useState<"default" | "accent">("default");
-
-  useEffect(() => {
-    const handleMove = (event: PointerEvent) => {
-      setPosition({ x: event.clientX, y: event.clientY });
-
-      const target = event.target as HTMLElement | null;
-      const nearest = target?.closest<HTMLElement>("[data-cursor]");
-      const intent = nearest?.dataset.cursor === "accent" ? "accent" : "default";
-      setVariant(intent);
-    };
-
-    document.addEventListener("pointermove", handleMove, { passive: true });
-    return () => document.removeEventListener("pointermove", handleMove);
-  }, []);
-
-  return (
-    <div
-      className={`cursor-glow ${variant === "accent" ? "cursor-glow-accent" : ""}`}
-      style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
-      aria-hidden
-    />
   );
 }
 

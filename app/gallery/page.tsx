@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { CursorGlow } from "../components/CursorGlow";
+
 const galleryShots = [
   {
     title: "Fashion motion still",
@@ -68,6 +70,7 @@ export default function GalleryPage() {
 
   return (
     <main className="relative min-h-screen bg-ink text-white">
+      <CursorGlow />
       <div className="accent-wash" />
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-14 px-5 pb-20 pt-12 sm:px-8 lg:px-10 lg:pt-16">
         <header className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/40 sm:flex-row sm:items-center sm:justify-between">
