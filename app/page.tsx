@@ -90,18 +90,24 @@ const slides = [
     detail: "105 ft seamless run with 50 ft by 35 ft stage area, 20 ft height, and 50 ft clearance.",
     badge: "New paint before every booking",
     tint: "from-white/20 via-white/10 to-white/0",
+    image:
+      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80",
   },
   {
     title: "Film-Ready Amenities",
     detail: "Makeup room, changing room, lounge, iron and stand, ice boxes, hangers, and studio assistant options.",
     badge: "Quiet HVAC & haze-friendly",
     tint: "from-amber-200/30 via-orange-100/10 to-white/5",
+    image:
+      "https://images.unsplash.com/photo-1517055729445-fa7d27394b4d?auto=format&fit=crop&w=1600&q=80",
   },
   {
     title: "Power & Backup",
     detail: "Generous electricity (ex-WAPDA) with generators from 25 kVA to 75 kVA available with operator.",
     badge: "Fuel excluded; call for rates",
     tint: "from-cyan-200/30 via-blue-100/10 to-white/5",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
   },
 ];
 
@@ -200,6 +206,16 @@ export default function Home() {
   );
 
   const [slideIndex, setSlideIndex] = useState(0);
+  const [quoteStatus, setQuoteStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
+  const [quoteError, setQuoteError] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    date: "",
+    details: "",
+  });
+  const whatsappLink = "https://wa.me/923000846656?text=Hi%20Sunday%20Studio,%20I%20need%20a%20quote";
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -208,11 +224,53 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
+  const handleSubmitQuote = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setQuoteStatus("loading");
+    setQuoteError(null);
+
+    try {
+      const response = await fetch("/api/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message. Please try again.");
+      }
+
+      setQuoteStatus("sent");
+      setFormValues({ name: "", email: "", phone: "", date: "", details: "" });
+    } catch (error) {
+      setQuoteStatus("error");
+      setQuoteError(error instanceof Error ? error.message : "Something went wrong.");
+    }
+  };
+
+  const updateField = (key: keyof typeof formValues, value: string) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
+    if (quoteStatus !== "idle") {
+      setQuoteStatus("idle");
+      setQuoteError(null);
+    }
+  };
+
   return (
     <main className="relative min-h-screen bg-ink text-white">
       <ScrollProgressBar />
       <CursorGlow />
       <div className="accent-wash" />
+      <a
+        href={whatsappLink}
+        className="whatsapp-fab"
+        target="_blank"
+        rel="noreferrer"
+        data-cursor="accent"
+        aria-label="Chat on WhatsApp to get a quote"
+      >
+        Get a quote on WhatsApp
+      </a>
 
       <div className="relative z-10 mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 lg:px-10 lg:pt-12">
         <header className="flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-5 py-3 shadow-sm backdrop-blur">
@@ -257,6 +315,9 @@ export default function Home() {
                 <a href="#packages" className="btn-ghost" data-cursor="accent">
                   See packages
                 </a>
+                <a href={whatsappLink} className="btn-whatsapp" data-cursor="accent" target="_blank" rel="noreferrer">
+                  WhatsApp a quote
+                </a>
               </div>
               <div className="grid gap-3 text-sm sm:grid-cols-3">
                 {quickFacts.map((item) => (
@@ -288,6 +349,7 @@ export default function Home() {
                         aria-label={`View slide ${idx + 1}`}
                       >
                         <div className={`h-full w-full rounded-xl bg-gradient-to-br ${slide.tint} carousel-pane`}>
+                          <div className="carousel-image" style={{ backgroundImage: `linear-gradient(120deg, rgba(13, 15, 20, 0.2), rgba(13, 15, 20, 0.5)), url(${slide.image})` }} />
                           <div className="glass-fade" />
                           <div className="relative flex h-full flex-col justify-between gap-4">
                             <div className="flex flex-col gap-2">
@@ -494,31 +556,109 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-inner shadow-black/40">
-              <div className="flex items-center justify-between text-sm text-neutral-300">
-                <span>Availability</span>
-                <span>Updated daily</span>
-              </div>
-              <div className="mt-4 space-y-4 text-sm">
-                {["Pre-light & tech check", "Crew call & blocking", "Shoot day momentum", "Client review & wrap"].map((step) => (
-                  <div key={step} className="flex items-start gap-3 rounded-xl bg-white/5 p-3">
-                    <span className="mt-1 text-lg">✓</span>
-                    <div>
-                      <p className="text-base font-semibold text-white">{step}</p>
-                      <p className="text-neutral-300">We keep the room calm while you shoot.</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 flex items-center justify-between rounded-2xl bg-gradient-to-r from-white/15 to-white/5 p-4 text-white">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-white/70">This week</p>
-                  <p className="text-lg font-semibold">2 slots open</p>
+            <div className="grid gap-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-inner shadow-black/40">
+                <div className="flex items-center justify-between text-sm text-neutral-300">
+                  <span>Availability</span>
+                  <span>Updated daily</span>
                 </div>
-                <a href="mailto:hello@sunday.studio" className="btn-primary" data-cursor="accent">
-                  Check dates
-                </a>
+                <div className="mt-4 space-y-4 text-sm">
+                  {["Pre-light & tech check", "Crew call & blocking", "Shoot day momentum", "Client review & wrap"].map((step) => (
+                    <div key={step} className="flex items-start gap-3 rounded-xl bg-white/5 p-3">
+                      <span className="mt-1 text-lg">✓</span>
+                      <div>
+                        <p className="text-base font-semibold text-white">{step}</p>
+                        <p className="text-neutral-300">We keep the room calm while you shoot.</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5 flex items-center justify-between rounded-2xl bg-gradient-to-r from-white/15 to-white/5 p-4 text-white">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-white/70">This week</p>
+                    <p className="text-lg font-semibold">2 slots open</p>
+                  </div>
+                  <a href="mailto:hello@sunday.studio" className="btn-primary" data-cursor="accent">
+                    Check dates
+                  </a>
+                </div>
               </div>
+
+              <form className="quote-form" onSubmit={handleSubmitQuote}>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="pill">Get a quote</p>
+                    <p className="mt-2 text-base text-neutral-200">Tell us the essentials and we’ll reply with a scoped estimate.</p>
+                  </div>
+                  <a href={whatsappLink} className="btn-whatsapp" data-cursor="accent" target="_blank" rel="noreferrer">
+                    WhatsApp
+                  </a>
+                </div>
+
+                <div className="quote-grid">
+                  <label className="form-field">
+                    <span>Name</span>
+                    <input
+                      required
+                      value={formValues.name}
+                      onChange={(event) => updateField("name", event.target.value)}
+                      placeholder="Ayesha Khan"
+                      autoComplete="name"
+                    />
+                  </label>
+                  <label className="form-field">
+                    <span>Email</span>
+                    <input
+                      required
+                      type="email"
+                      value={formValues.email}
+                      onChange={(event) => updateField("email", event.target.value)}
+                      placeholder="team@agency.com"
+                      autoComplete="email"
+                    />
+                  </label>
+                  <label className="form-field">
+                    <span>Phone / WhatsApp</span>
+                    <input
+                      required
+                      value={formValues.phone}
+                      onChange={(event) => updateField("phone", event.target.value)}
+                      placeholder="0300 0000000"
+                      autoComplete="tel"
+                    />
+                  </label>
+                  <label className="form-field">
+                    <span>Preferred date</span>
+                    <input
+                      type="date"
+                      value={formValues.date}
+                      onChange={(event) => updateField("date", event.target.value)}
+                    />
+                  </label>
+                </div>
+
+                <label className="form-field">
+                  <span>Project details</span>
+                  <textarea
+                    required
+                    value={formValues.details}
+                    onChange={(event) => updateField("details", event.target.value)}
+                    placeholder="Share the shot list, number of looks, preferred lighting, and timing."
+                    rows={4}
+                  />
+                </label>
+
+                <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-200">
+                  <button type="submit" className="btn-primary" disabled={quoteStatus === "loading"}>
+                    {quoteStatus === "loading" ? "Sending..." : "Email my quote"}
+                  </button>
+                  <a href="mailto:hello@sunday.studio" className="btn-ghost" data-cursor="accent">
+                    Email manually
+                  </a>
+                  {quoteStatus === "sent" && <span className="chip">Thanks! We’ll reply within one business day.</span>}
+                  {quoteStatus === "error" && <span className="chip chip-error">{quoteError}</span>}
+                </div>
+              </form>
             </div>
           </div>
         </section>
