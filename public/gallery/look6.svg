@@ -1,0 +1,14 @@
+<svg width="960" height="720" viewBox="0 0 960 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g6" x1="180" y1="160" x2="760" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5D0FE" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#C084FC" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="720" rx="40" fill="#0E0F14"/>
+  <rect x="200" y="140" width="560" height="420" rx="38" fill="#111827" stroke="url(#g6)" stroke-width="12"/>
+  <path d="M240 360C320 260 640 260 720 360" stroke="#E879F9" stroke-width="16" stroke-linecap="round" stroke-opacity="0.65"/>
+  <circle cx="320" cy="240" r="70" fill="#F5D0FE" fill-opacity="0.7"/>
+  <circle cx="640" cy="240" r="70" fill="#C084FC" fill-opacity="0.6"/>
+  <text x="220" y="540" fill="#F5D0FE" font-size="32" font-family="'Inter', system-ui" font-weight="700">Music video haze</text>
+</svg>

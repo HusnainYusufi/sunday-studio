@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -90,24 +91,21 @@ const slides = [
     detail: "105 ft seamless run with 50 ft by 35 ft stage area, 20 ft height, and 50 ft clearance.",
     badge: "New paint before every booking",
     tint: "from-white/20 via-white/10 to-white/0",
-    image:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80",
+    image: "/slides/infinity.svg",
   },
   {
     title: "Film-Ready Amenities",
     detail: "Makeup room, changing room, lounge, iron and stand, ice boxes, hangers, and studio assistant options.",
     badge: "Quiet HVAC & haze-friendly",
     tint: "from-amber-200/30 via-orange-100/10 to-white/5",
-    image:
-      "https://images.unsplash.com/photo-1517055729445-fa7d27394b4d?auto=format&fit=crop&w=1600&q=80",
+    image: "/slides/amenities.svg",
   },
   {
     title: "Power & Backup",
     detail: "Generous electricity (ex-WAPDA) with generators from 25 kVA to 75 kVA available with operator.",
     badge: "Fuel excluded; call for rates",
     tint: "from-cyan-200/30 via-blue-100/10 to-white/5",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
+    image: "/slides/power.svg",
   },
 ];
 
@@ -198,9 +196,24 @@ function TiltCard({
 export default function Home() {
   const quickFacts = useMemo(
     () => [
-      { label: "Size", value: "105 ft seamless wall" },
-      { label: "Stage", value: "50 ft × 35 ft × 20 ft" },
-      { label: "Location", value: "Lahore · Model Town" },
+      {
+        label: "Canvas",
+        value: "105 ft seamless",
+        detail: "Fresh coat before every booking—no scuffs in your frame.",
+        icon: "🎬",
+      },
+      {
+        label: "Stage",
+        value: "50 × 35 × 20 ft",
+        detail: "Room to fly cranes and float haze while talent stays comfortable.",
+        icon: "📐",
+      },
+      {
+        label: "Access",
+        value: "Model Town, Lahore",
+        detail: "Central, generator-ready, and easy load-in for grip trucks.",
+        icon: "📍",
+      },
     ],
     [],
   );
@@ -272,7 +285,7 @@ export default function Home() {
         Get a quote on WhatsApp
       </a>
 
-      <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-16 px-5 pb-16 pt-8 sm:px-8 lg:px-10 lg:pt-12">
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-20 px-5 pb-20 pt-10 sm:px-8 lg:px-10 lg:pt-14">
         <header className="flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-5 py-3 shadow-sm backdrop-blur">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 text-sm font-semibold text-black">
@@ -284,13 +297,22 @@ export default function Home() {
             </div>
           </div>
           <nav className="hidden items-center gap-3 text-sm font-semibold text-white md:flex">
-            {[{ label: "Spaces", href: "#spaces" }, { label: "Packages", href: "#packages" }, { label: "Book", href: "#contact" }].map(
-              (link) => (
+            {[
+              { label: "Spaces", href: "#spaces" },
+              { label: "Packages", href: "#packages" },
+              { label: "Gallery", href: "/gallery" },
+              { label: "Book", href: "#contact" },
+            ].map((link) => (
+              link.href.startsWith("#") ? (
                 <a key={link.href} href={link.href} className="nav-link">
                   {link.label}
                 </a>
-              ),
-            )}
+              ) : (
+                <Link key={link.href} href={link.href} className="nav-link">
+                  {link.label}
+                </Link>
+              )
+            ))}
             <a href="mailto:hello@sunday.studio" className="rounded-full bg-white px-4 py-2 text-black shadow-sm" data-cursor="accent">
               Book time
             </a>
@@ -319,11 +341,15 @@ export default function Home() {
                   WhatsApp a quote
                 </a>
               </div>
-              <div className="grid gap-3 text-sm sm:grid-cols-3">
+              <div className="grid gap-4 text-sm sm:grid-cols-3">
                 {quickFacts.map((item) => (
-                  <div key={item.label} className="fact-card">
-                    <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{item.label}</p>
-                    <p className="text-base font-semibold text-white">{item.value}</p>
+                  <div key={item.label} className="fact-card fact-card-premium">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{item.label}</p>
+                      <span aria-hidden className="text-base">{item.icon}</span>
+                    </div>
+                    <p className="mt-1 text-lg font-semibold text-white">{item.value}</p>
+                    <p className="mt-2 text-xs text-neutral-200">{item.detail}</p>
                   </div>
                 ))}
               </div>
@@ -349,7 +375,13 @@ export default function Home() {
                         aria-label={`View slide ${idx + 1}`}
                       >
                         <div className={`h-full w-full rounded-xl bg-gradient-to-br ${slide.tint} carousel-pane`}>
-                          <div className="carousel-image" style={{ backgroundImage: `linear-gradient(120deg, rgba(13, 15, 20, 0.2), rgba(13, 15, 20, 0.5)), url(${slide.image})` }} />
+                          <div
+                            className="carousel-image"
+                            style={{
+                              backgroundImage: `linear-gradient(120deg, rgba(13, 15, 20, 0.3), rgba(13, 15, 20, 0.6)), url(${slide.image})`,
+                              backgroundColor: "#0d0f14",
+                            }}
+                          />
                           <div className="glass-fade" />
                           <div className="relative flex h-full flex-col justify-between gap-4">
                             <div className="flex flex-col gap-2">
@@ -425,16 +457,50 @@ export default function Home() {
 
             <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[
-                { label: "Total Seamless Length", value: "105 ft (≈ 32 m)" },
-                { label: "Stage Area", value: "50 ft wide × 35 ft deep (≈ 15.2 m × 10.7 m)" },
-                { label: "Wall Height", value: "20 ft (≈ 6.1 m)" },
-                { label: "Roof Height / Clearance", value: "50 ft (≈ 15.2 m)" },
-                { label: "Best For", value: "Films, ads, fashion, and content" },
-                { label: "Comfort", value: "Makeup room, changing room, lounge" },
+                {
+                  label: "Total Seamless Length",
+                  value: "105 ft (≈ 32 m)",
+                  detail: "Wide enough for car commercials and crane moves.",
+                  icon: "↔️",
+                },
+                {
+                  label: "Stage Area",
+                  value: "50 ft × 35 ft × 20 ft",
+                  detail: "Space to fly rigs, haze, and dance without crowding.",
+                  icon: "🪜",
+                },
+                {
+                  label: "Roof Height / Clearance",
+                  value: "50 ft (≈ 15.2 m)",
+                  detail: "Comfortable clearance for grids, diffusion, and overheads.",
+                  icon: "🎛️",
+                },
+                {
+                  label: "Lighting Support",
+                  value: "Pre-lit options",
+                  detail: "Pick from preset looks or dial your own with our team.",
+                  icon: "💡",
+                },
+                {
+                  label: "Best For",
+                  value: "Film · Ads · Fashion",
+                  detail: "From tabletop to editorials, the wall stays camera ready.",
+                  icon: "⭐",
+                },
+                {
+                  label: "Comfort",
+                  value: "Makeup, changing, lounge",
+                  detail: "Quiet HVAC, fresh linens, and refreshments on request.",
+                  icon: "☕",
+                },
               ].map((fact) => (
-                <div key={fact.label} className="fact-card fact-card-strong">
-                  <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{fact.label}</p>
-                  <p className="mt-1 text-lg font-semibold text-white">{fact.value}</p>
+                <div key={fact.label} className="fact-card fact-card-strong fact-card-premium">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{fact.label}</p>
+                    <span aria-hidden className="text-base">{fact.icon}</span>
+                  </div>
+                  <p className="mt-2 text-lg font-semibold text-white">{fact.value}</p>
+                  <p className="mt-2 text-xs text-neutral-200">{fact.detail}</p>
                 </div>
               ))}
             </div>
@@ -451,7 +517,7 @@ export default function Home() {
             <p className="text-sm text-neutral-400">Need something custom? We adjust quickly.</p>
           </div>
 
-          <div className="mt-6 grid gap-7 lg:grid-cols-3">
+          <div className="mt-7 grid gap-8 lg:grid-cols-3">
             {packages.map((tier) => (
               <div key={tier.title} className="h-full">
                 <div className="package-flip" data-cursor="accent" tabIndex={0}>
@@ -497,7 +563,7 @@ export default function Home() {
             ))}
           </div>
 
-          <p className="mt-4 max-w-3xl text-sm text-neutral-300">
+          <p className="mt-5 max-w-3xl text-sm text-neutral-300">
             Rates exclude electricity (generator/WAPDA). Overtime is billed at Rs. 5,000 per 30 minutes beyond the scheduled slot.
             If the infinity wall needs an extra coat after a shoot that is not shot on a white background only, the additional coat
             will be billed to the client.
@@ -663,11 +729,11 @@ export default function Home() {
           </div>
           </section>
 
-          <section className="section-shell">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p className="pill">Other Services</p>
+        <section className="section-shell">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="pill">Other Services</p>
                   <h2 className="section-title">Lighting, grip, and generators on call.</h2>
                   <p className="text-lg text-neutral-200">Book everything with one message—no scavenger hunts.</p>
                 </div>
@@ -701,9 +767,70 @@ export default function Home() {
                   </ul>
                   <div className="mt-5 rounded-2xl bg-white/10 p-4 text-sm text-white/90">Operator included; fuel will be billed based on usage.</div>
                 </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section-shell">
+          <footer className="footer">
+            <div className="footer-top">
+              <div className="flex items-center gap-3">
+                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-base font-semibold text-black">
+                  SS
+                </span>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">Sunday Studio</p>
+                  <p className="text-lg font-semibold text-white">Infinity wall, Lahore</p>
+                </div>
+              </div>
+              <a href="mailto:hello@sunday.studio" className="btn-primary" data-cursor="accent">
+                Book a shoot
+              </a>
+            </div>
+
+            <div className="footer-grid">
+              <div className="footer-card">
+                <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">Address</p>
+                <p className="mt-2 text-sm text-neutral-100">Building No 13-14, Block H-3, Main Canal Road, Near Mughal Eye, Lahore</p>
+                <p className="mt-3 text-xs text-neutral-300">Central load-in and client parking available.</p>
+              </div>
+              <div className="footer-card">
+                <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">Contact</p>
+                <div className="mt-2 space-y-2 text-sm font-semibold text-white">
+                  <a href="tel:+923000846656" className="flex items-center gap-2" data-cursor="accent">
+                    <span className="chip">Phone</span>
+                    +92 300 084 6656
+                  </a>
+                  <a href={whatsappLink} className="flex items-center gap-2" data-cursor="accent">
+                    <span className="chip">WhatsApp</span>
+                    Quick quote
+                  </a>
+                  <a href="mailto:hello@sunday.studio" className="flex items-center gap-2" data-cursor="accent">
+                    <span className="chip">Email</span>
+                    hello@sunday.studio
+                  </a>
+                </div>
+              </div>
+              <div className="footer-card">
+                <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">Quick links</p>
+                <div className="mt-2 grid gap-2 text-sm text-neutral-100">
+                  <a href="#spaces" className="nav-link" data-cursor="accent">Spaces</a>
+                  <a href="#packages" className="nav-link" data-cursor="accent">Packages</a>
+                  <Link href="/gallery" className="nav-link" data-cursor="accent">
+                    Gallery
+                  </Link>
+                  <a href="#contact" className="nav-link" data-cursor="accent">Book time</a>
+                </div>
+              </div>
+              <div className="footer-card">
+                <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">Hours</p>
+                <p className="mt-2 text-sm text-neutral-100">Weekdays: 9 AM – 9 PM</p>
+                <p className="text-sm text-neutral-100">Weekends: By appointment</p>
+                <p className="mt-3 text-xs text-neutral-300">Ask about overnight resets and pre-light options.</p>
               </div>
             </div>
-          </section>
+          </footer>
+        </section>
       </div>
     </main>
   );
