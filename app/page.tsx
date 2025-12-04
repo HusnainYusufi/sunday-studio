@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useAnimation, useMotionValue, useTransform } from "framer-motion";
 
 import { CursorGlow } from "./components/CursorGlow";
 
@@ -11,16 +12,19 @@ const spaces = [
     title: "Infinity Studio",
     blurb: "Our freshly painted infinity wall is Lahore’s calmest blank canvas for films, ads, and fashion.",
     tag: "Seamless 105 ft",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
   },
   {
     title: "Changing & Makeup",
     blurb: "Dedicated makeup room, changing room, and ironing corner keep talent relaxed between takes.",
     tag: "Ready rooms",
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=80",
   },
   {
     title: "Sitting Lounge",
     blurb: "Clients stay close to the action with a lounge for approvals, snacks, and quiet conversations.",
     tag: "Client-first",
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1600&q=80",
   },
 ];
 
@@ -140,31 +144,36 @@ function ScrollProgressBar() {
   );
 }
 
-function TiltCard({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  const rotateX = useTransform(tiltY, (y) => `rotateX(${y}deg)`);
+  const rotateY = useTransform(tiltX, (x) => `rotateY(${x}deg)`);
 
   const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 6;
-    const y = ((event.clientY - rect.top) / rect.height - 0.5) * -6;
-    setTilt({ x, y });
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * -8;
+    tiltX.set(x);
+    tiltY.set(y);
+  };
+
+  const resetTilt = () => {
+    tiltX.set(0);
+    tiltY.set(0);
   };
 
   return (
-    <div
+    <motion.div
       onMouseMove={handleMove}
-      onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      className={`${className} transition-transform duration-300 ease-out`}
-      style={{ transform: `rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)` }}
+      onMouseLeave={resetTilt}
+      style={{ transform: "translateZ(0)", rotateX, rotateY }}
+      whileHover={{ scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 200, damping: 16 }}
+      className={className}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -193,7 +202,10 @@ export default function Home() {
     [],
   );
 
+  const slideDuration = 7;
   const [slideIndex, setSlideIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [openPackage, setOpenPackage] = useState<string | null>(null);
   const [quoteStatus, setQuoteStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [formValues, setFormValues] = useState({
@@ -204,13 +216,26 @@ export default function Home() {
     details: "",
   });
   const whatsappLink = "https://wa.me/923000846656?text=Hi%20Sunday%20Studio,%20I%20need%20a%20quote";
+  const slideTimer = useRef<NodeJS.Timeout | null>(null);
+  const progressControls = useAnimation();
 
   useEffect(() => {
-    const id = setInterval(() => {
+    if (slideTimer.current) clearTimeout(slideTimer.current);
+    progressControls.stop();
+
+    if (isPaused) return;
+
+    void progressControls.set({ scaleX: 0 });
+    void progressControls.start({ scaleX: 1, transition: { duration: slideDuration, ease: "linear" } });
+
+    slideTimer.current = setTimeout(() => {
       setSlideIndex((prev) => (prev + 1) % slides.length);
-    }, 5200);
-    return () => clearInterval(id);
-  }, []);
+    }, slideDuration * 1000);
+
+    return () => {
+      if (slideTimer.current) clearTimeout(slideTimer.current);
+    };
+  }, [isPaused, progressControls, slideDuration, slideIndex]);
 
   const handleSubmitQuote = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -333,57 +358,112 @@ export default function Home() {
             <div className="surface-card p-6">
               <div className="flex items-center justify-between text-sm text-neutral-300">
                 <span>Studio carousel</span>
-                <span className="text-xs uppercase tracking-[0.2em] text-white/70">Tap to pause</span>
+                <span className="text-xs uppercase tracking-[0.2em] text-white/70">Tap or hover to pause</span>
               </div>
+
               <div className="mt-5">
-                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-inner shadow-black/50">
-                  {slides.map((slide, idx) => {
-                    const isActive = idx === slideIndex;
-                    return (
-                      <button
-                        key={slide.title}
-                        className={`carousel-slide ${isActive ? "opacity-100" : "opacity-0"}`}
-                        style={{ zIndex: isActive ? 2 : 1 }}
-                        onClick={() => setSlideIndex(idx)}
-                        type="button"
-                        data-cursor="accent"
-                        aria-label={`View slide ${idx + 1}`}
+                <div
+                  className="carousel-pane"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                  onTouchStart={() => setIsPaused(true)}
+                  onTouchEnd={() => setIsPaused(false)}
+                  role="region"
+                  aria-live="polite"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowRight") {
+                      setSlideIndex((prev) => (prev + 1) % slides.length);
+                    }
+                    if (event.key === "ArrowLeft") {
+                      setSlideIndex((prev) => (prev - 1 + slides.length) % slides.length);
+                    }
+                  }}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={slideIndex}
+                      className="carousel-slide"
+                      initial={{ opacity: 0, scale: 0.98, y: 14 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.98, y: -12 }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                      drag="x"
+                      dragElastic={0.18}
+                      dragConstraints={{ left: 0, right: 0 }}
+                      onDragEnd={(event, info) => {
+                        if (Math.abs(info.offset.x) < 60) return;
+                        if (info.offset.x < 0) {
+                          setSlideIndex((prev) => (prev + 1) % slides.length);
+                        } else {
+                          setSlideIndex((prev) => (prev - 1 + slides.length) % slides.length);
+                        }
+                      }}
+                    >
+                      <div
+                        className="relative h-full overflow-hidden rounded-2xl border border-white/10"
+                        onMouseMove={(event) => {
+                          const rect = event.currentTarget.getBoundingClientRect();
+                          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+                          const y = ((event.clientY - rect.top) / rect.height - 0.5) * 10;
+                          event.currentTarget.style.setProperty("--parallax-x", `${x}px`);
+                          event.currentTarget.style.setProperty("--parallax-y", `${y}px`);
+                        }}
+                        onMouseLeave={(event) => {
+                          event.currentTarget.style.setProperty("--parallax-x", "0px");
+                          event.currentTarget.style.setProperty("--parallax-y", "0px");
+                        }}
                       >
-                        <div className={`h-full w-full rounded-xl bg-gradient-to-br ${slide.tint} carousel-pane`}>
-                          <div
-                            className="carousel-image"
-                            style={{
-                              backgroundImage: `linear-gradient(120deg, rgba(13, 15, 20, 0.3), rgba(13, 15, 20, 0.6)), url(${slide.image})`,
-                              backgroundColor: "#0d0f14",
-                            }}
-                          />
-                          <div className="glass-fade" />
-                          <div className="relative flex h-full flex-col justify-between gap-4">
-                            <div className="flex flex-col gap-2">
-                              <span className="chip chip-ghost">{slide.badge}</span>
-                              <p className="text-xl font-semibold text-white">{slide.title}</p>
-                              <p className="text-sm text-neutral-100/80">{slide.detail}</p>
-                            </div>
-                            <div className="flex items-center justify-between text-xs text-white/70">
-                              <span>Swipe or click</span>
-                              <span className="rounded-full bg-white/15 px-3 py-1 font-semibold text-white">{idx + 1} / {slides.length}</span>
-                            </div>
+                        <motion.div
+                          className="carousel-image"
+                          style={{ backgroundImage: `url(${slides[slideIndex].image})` }}
+                          initial={{ scale: 1.08, opacity: 0.7 }}
+                          animate={{ scale: 1.02, opacity: 1 }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                        />
+                        <motion.div
+                          className="glass-fade"
+                          animate={{ backgroundPosition: ["0% 0%", "20% 10%", "0% 0%"] }}
+                          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                        <div className="absolute inset-0 pointer-events-none">
+                          <div className="glass-fade parallax-layer" />
+                        </div>
+
+                        <div className="relative z-10 flex h-full flex-col justify-between p-6">
+                          <div className="flex items-center gap-2">
+                            <span className="chip chip-ghost text-xs">{slides[slideIndex].badge}</span>
+                            <span className="chip chip-ghost text-xs">{slideIndex + 1}/{slides.length}</span>
+                          </div>
+                          <div className="space-y-3 max-w-xl">
+                            <h3 className="text-2xl font-semibold text-white sm:text-3xl">{slides[slideIndex].title}</h3>
+                            <p className="text-base text-neutral-100 sm:text-lg">{slides[slideIndex].detail}</p>
                           </div>
                         </div>
-                      </button>
-                    );
-                  })}
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-                <div className="mt-3 flex justify-center gap-2">
-                  {slides.map((slide, idx) => (
-                    <button
-                      key={slide.title}
-                      type="button"
-                      className={`dot ${idx === slideIndex ? "dot-active" : ""}`}
-                      onClick={() => setSlideIndex(idx)}
-                      aria-label={`Go to slide ${idx + 1}`}
+
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    {slides.map((slide, idx) => (
+                      <button
+                        key={slide.title}
+                        onClick={() => setSlideIndex(idx)}
+                        onFocus={() => setIsPaused(true)}
+                        onBlur={() => setIsPaused(false)}
+                        className={`dot ${slideIndex === idx ? "dot-active" : ""}`}
+                        aria-label={`Go to slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                  <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                    <motion.span
+                      className="absolute left-0 top-0 h-full origin-left rounded-full bg-white/80 shadow-lg"
+                      animate={progressControls}
                     />
-                  ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -403,8 +483,22 @@ export default function Home() {
           <div className="mt-6 grid gap-7 sm:grid-cols-3">
             {spaces.map((space) => (
               <TiltCard key={space.title} className="h-full">
-                <div className="space-card" data-cursor="accent">
-                  <div className="space-visual" aria-hidden />
+                <motion.div
+                  className="space-card"
+                  data-cursor="accent"
+                  whileHover={{ y: -4, boxShadow: "0 24px 48px rgba(0,0,0,0.5)" }}
+                  transition={{ type: "spring", stiffness: 180, damping: 18 }}
+                >
+                  <div className="space-visual" aria-hidden>
+                    <motion.div
+                      className="space-visual-media"
+                      style={{ backgroundImage: `url(${space.image})` }}
+                      initial={{ scale: 1.06 }}
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                    />
+                    <div className="space-visual-mask" />
+                  </div>
                   <div className="mt-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{space.tag}</p>
@@ -413,7 +507,7 @@ export default function Home() {
                     <span className="chip">View</span>
                   </div>
                   <p className="mt-2 text-sm text-neutral-200">{space.blurb}</p>
-                </div>
+                </motion.div>
               </TiltCard>
             ))}
           </div>
@@ -492,51 +586,93 @@ export default function Home() {
             <p className="text-sm text-neutral-400">Need something custom? We adjust quickly.</p>
           </div>
 
-          <div className="mt-7 grid gap-8 lg:grid-cols-3">
-            {packages.map((tier) => (
-              <div key={tier.title} className="h-full">
-                <div className="package-flip" data-cursor="accent" tabIndex={0}>
-                  <div className="package-flip-inner">
-                    <div className="package-face package-front">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-2">
-                          <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{tier.duration}</p>
-                          <h3 className="text-xl font-semibold text-white">{tier.title}</h3>
-                          <p className="text-sm text-neutral-200">{tier.overview}</p>
-                        </div>
-                        <div className="rounded-2xl bg-white/15 px-3 py-2 text-right text-white">
-                          <p className="text-xs uppercase tracking-[0.14em] text-white/80">Starts at</p>
-                          <p className="text-lg font-semibold leading-tight">{tier.price}</p>
-                        </div>
-                      </div>
-                      <p className="mt-6 text-xs text-neutral-300">Flip to see what’s included.</p>
-                    </div>
-
-                    <div className="package-face package-back">
-                      <div className="flex flex-col gap-3">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.18em] text-white/80">What’s included</p>
-                          <ul className="mt-3 space-y-2 text-sm text-neutral-100">
-                            {tier.perks.map((perk) => (
-                              <li key={perk} className="flex items-start gap-2">
-                                <span className="text-base text-white/70">•</span>
-                                <span>{perk}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="rounded-2xl bg-white/10 p-3 text-sm text-white">
-                          <p className="text-xs uppercase tracking-[0.16em] text-white/70">Best for</p>
-                          <p className="mt-1 font-semibold text-white">{tier.suitedFor}</p>
-                        </div>
-                        <p className="text-xs text-neutral-300">Pricing is exclusive of electricity (generator/WAPDA). Overtime: Rs. 5,000 per 30 minutes.</p>
-                      </div>
-                    </div>
-                  </div>
+        <div className="mt-7 grid gap-8 lg:grid-cols-3">
+          {packages.map((tier) => (
+            <motion.article
+              key={tier.title}
+              className="package-card package-card-motion"
+              data-cursor="accent"
+              tabIndex={0}
+              onHoverStart={() => setOpenPackage(tier.title)}
+              onHoverEnd={() => setOpenPackage(null)}
+              onFocus={() => setOpenPackage(tier.title)}
+              onBlur={() => setOpenPackage(null)}
+              onClick={() => setOpenPackage((prev) => (prev === tier.title ? null : tier.title))}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setOpenPackage((prev) => (prev === tier.title ? null : tier.title));
+                }
+              }}
+              layout
+              whileHover={{ y: -6, boxShadow: "0 26px 52px rgba(0,0,0,0.48)" }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{tier.duration}</p>
+                  <h3 className="text-xl font-semibold text-white">{tier.title}</h3>
+                  <p className="text-sm text-neutral-200">{tier.overview}</p>
+                </div>
+                <div className="rounded-2xl bg-white/15 px-3 py-2 text-right text-white">
+                  <p className="text-xs uppercase tracking-[0.14em] text-white/80">Starts at</p>
+                  <p className="text-lg font-semibold leading-tight">{tier.price}</p>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <div className="mt-5 flex items-center justify-between text-xs text-neutral-300">
+                <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-semibold text-white/80">
+                  Tap, hover, or press Enter
+                </span>
+                <span className="text-white/70">Best for {tier.suitedFor}</span>
+              </div>
+
+              <AnimatePresence mode="wait">
+                {openPackage === tier.title ? (
+                  <motion.div
+                    key="details"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    className="mt-5 space-y-3 rounded-2xl border border-white/12 bg-white/[0.06] p-4"
+                  >
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-white/80">What’s included</p>
+                      <ul className="mt-3 space-y-2 text-sm text-neutral-100">
+                        {tier.perks.map((perk) => (
+                          <li key={perk} className="flex items-start gap-2">
+                            <span className="text-base text-white/70">•</span>
+                            <span>{perk}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="rounded-2xl bg-white/10 p-3 text-sm text-white">
+                      <p className="text-xs uppercase tracking-[0.16em] text-white/70">Best for</p>
+                      <p className="mt-1 font-semibold text-white">{tier.suitedFor}</p>
+                    </div>
+                    <p className="text-xs text-neutral-300">
+                      Pricing is exclusive of electricity (generator/WAPDA). Overtime: Rs. 5,000 per 30 minutes.
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="overview"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-5 rounded-2xl border border-white/8 bg-gradient-to-r from-white/10 to-white/5 p-4 text-sm text-white/90"
+                  >
+                    <p className="font-semibold">{tier.title} is great for:</p>
+                    <p className="mt-2 text-neutral-200">{tier.suitedFor}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.article>
+          ))}
+        </div>
 
           <p className="mt-5 max-w-3xl text-sm text-neutral-300">
             Rates exclude electricity (generator/WAPDA). Overtime is billed at Rs. 5,000 per 30 minutes beyond the scheduled slot.
