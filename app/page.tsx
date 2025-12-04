@@ -3,116 +3,58 @@
 import { useEffect, useMemo, useState } from "react";
 import type React from "react";
 
-const specs = [
+const spaces = [
   {
-    title: "Infinity Wall",
-    detail: "26 ft wide x 14 ft high seamless cyc with floor cove for clean horizons.",
-    badge: "Largest in Lahore",
+    title: "Neutral Cyc",
+    blurb: "Clean backdrop for portraits, products, and quick turnarounds.",
+    tag: "All-day light",
   },
   {
-    title: "Lighting Grid",
-    detail: "8x 350W RGBWW LED panels + softboxes tuned for cinema & glossy product shoots.",
-    badge: "Color-true",
+    title: "Bold Color",
+    blurb: "Layered gradients and haze for music videos and campaign looks.",
+    tag: "RGBWW",
   },
   {
-    title: "Audio Ready",
-    detail: "Acoustic treatment, wireless lav mics, and silent ventilation for interviews & podcasts.",
-    badge: "Low noise",
-  },
-  {
-    title: "Support Crew",
-    detail: "Producers, gaffers, and concierge to reset scenes, manage call sheets, and keep momentum.",
-    badge: "Concierge",
+    title: "Client Lounge",
+    blurb: "Live feed, espresso, and reviews without stepping on set.",
+    tag: "Comfort",
   },
 ];
 
-const budgetTiers = [
+const packages = [
   {
-    label: "Launch Kit",
-    range: "$400 - $800",
-    description: "Half-day stage hire, lighting presets, and an assistant for swift content drops.",
-    perks: ["Up to 6 hours on stage", "Pre-built lighting looks", "Grip cart & sandbags", "Coffee + craft"],
+    title: "Sprint",
+    price: "$480",
+    description: "Half-day stage, lighting presets, and an assistant to keep moves tight.",
+    perks: ["Up to 6 hours", "Preset looks", "Grip cart"],
   },
   {
-    label: "Cinematic Day",
-    range: "$1,000 - $2,500",
-    description: "Full-day control with custom lighting, audio capture, and producer support.",
-    perks: ["12-hour block", "Dedicated producer", "Sound capture suite", "Shot-by-shot resets"],
+    title: "Full Day",
+    price: "$1,400",
+    description: "12-hour lockout with custom lighting, producer support, and audio.",
+    perks: ["Custom cues", "Producer", "Sound capture"],
   },
   {
-    label: "Campaign Lab",
-    range: "$3,000+",
-    description: "Multi-day builds for launches with art direction, set fabrication, and live client lounge.",
-    perks: ["Custom set builds", "Art direction desk", "Client review lounge", "Crew & catering"],
-  },
-];
-
-const services = [
-  "Music videos & performance sessions",
-  "Luxury product films with reflective staging",
-  "Talk shows, podcasts, and livestreams",
-  "Fashion editorials with wind + haze",
-  "Cinematic portraits and reels",
-  "Brand launches & experiential shoots",
-];
-
-const arGallery = [
-  {
-    title: "Holographic Reveal",
-    caption: "Layered reflections on the infinity wall",
-    depth: "12.4m volumetric depth",
-  },
-  {
-    title: "Monochrome Mirage",
-    caption: "Float your product over a void grid",
-    depth: "Real-time parallax",
-  },
-  {
-    title: "Performer Ghost Trail",
-    caption: "Capture trails with motion echo and haze",
-    depth: "120fps ready",
-  },
-  {
-    title: "Architectural Sweep",
-    caption: "AR arches that bend into the cyc",
-    depth: "True-to-scale",
+    title: "Campaign",
+    price: "Let's plan",
+    description: "Multi-day builds with set design, catering, and client lounge hosting.",
+    perks: ["Fabrication", "Art direction", "Crew"],
   },
 ];
 
-const galleryShots = [
+const steps = [
   {
-    title: "Monochrome stage", 
-    summary: "High-key white floor with floating accent lights.",
-    format: "Still + BTS clip",
-    tags: ["RAW + graded", "32-bit EXR", "Lighting notes"],
+    title: "Share your storyboard",
+    detail: "Send references or a quick note—we respond with a floor plan and lighting options.",
   },
   {
-    title: "Product reflections",
-    summary: "Glossed floor with black-out spill control.",
-    format: "Hero still set",
-    tags: ["Polarizer ready", "Rigged overhead", "Specular control"],
+    title: "Lock the look",
+    detail: "Pick a preset or request a new cue. We pre-light the stage before you arrive.",
   },
   {
-    title: "Movement + haze",
-    summary: "Performer with kinetic light sweeps and DMX trails.",
-    format: "60s spotlight reel",
-    tags: ["Haze cleared", "Wind effects", "Audio safe"],
+    title: "Shoot without clutter",
+    detail: "Stage manager keeps resets moving, while the lounge keeps clients comfortable.",
   },
-  {
-    title: "Client lounge",
-    summary: "Live feed, espresso bar, and notes display.",
-    format: "Space tour",
-    tags: ["Private review", "Color accurate", "Fast Wi‑Fi"],
-  },
-];
-
-const amenities = [
-  { label: "Makeup & wardrobe", detail: "Lit mirrors, steamer, racks, and privacy screens." },
-  { label: "Power & distro", detail: "50kW UPS-backed, 32A + 16A drops with cable runs." },
-  { label: "Crew base", detail: "Production desk, call sheet display, and lounge seating." },
-  { label: "Load-in", detail: "Street-level access with dolly ramp and secure parking." },
-  { label: "Climate & sound", detail: "Quiet HVAC, acoustic panels, and isolation for audio." },
-  { label: "Connectivity", detail: "Hardline fiber, guest Wi‑Fi, and casting monitor feed." },
 ];
 
 function ScrollProgressBar() {
@@ -155,8 +97,8 @@ function TiltCard({
 
   const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
-    const y = ((event.clientY - rect.top) / rect.height - 0.5) * -8;
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 6;
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * -6;
     setTilt({ x, y });
   };
 
@@ -165,7 +107,7 @@ function TiltCard({
       onMouseMove={handleMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
       className={`${className} transition-transform duration-300 ease-out`}
-      style={{ transform: `rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) translateY(-4px)` }}
+      style={{ transform: `rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)` }}
     >
       {children}
     </div>
@@ -173,467 +115,240 @@ function TiltCard({
 }
 
 export default function Home() {
-  const heroShots = useMemo(
+  const quickFacts = useMemo(
     () => [
-      { title: "Neutral Cyc", subtitle: "Pristine white wrap" },
-      { title: "Cinematic Glow", subtitle: "Amber edges & haze" },
-      { title: "Bold Color", subtitle: "RGBWW gradients" },
+      { label: "Power", value: "50kW backup" },
+      { label: "Location", value: "Lahore · Model Town" },
+      { label: "Crew", value: "Producers & gaffers" },
     ],
     [],
   );
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+    <main className="relative min-h-screen bg-ink text-white">
       <ScrollProgressBar />
-      <div className="gradient-veil" />
-      <div className="grid-overlay" />
+      <div className="accent-wash" />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 lg:px-12 lg:pt-12">
-        <header className="mb-10 flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-5 py-3 backdrop-blur">
+      <div className="relative z-10 mx-auto max-w-5xl px-5 pb-16 pt-8 sm:px-8 lg:px-10 lg:pt-12">
+        <header className="flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-5 py-3 shadow-sm">
           <div className="flex items-center gap-3">
-            <span className="h-10 w-10 rounded-2xl bg-gradient-to-br from-white to-white/20 shadow-lg shadow-white/30" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 text-sm font-semibold text-black">
+              SS
+            </span>
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">Sunday Studio</p>
-              <p className="text-base font-semibold text-white">Infinity Wall | Lahore</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">Sunday Studio</p>
+              <p className="text-base font-semibold text-white">Infinity Wall · Lahore</p>
             </div>
           </div>
-          <div className="hidden items-center gap-3 text-sm font-semibold text-white md:flex">
-            {[{ label: "Gallery", href: "#gallery" }, { label: "Specs", href: "#specs" }, { label: "Amenities", href: "#amenities" }, { label: "Book", href: "#contact" }].map((link) => (
-              <a key={link.href} href={link.href} className="rounded-full px-3 py-2 text-white/80 transition hover:text-white">
-                {link.label}
-              </a>
-            ))}
-            <a
-              href="mailto:hello@sunday.studio"
-              className="rounded-full bg-white px-4 py-2 text-black shadow-md shadow-white/20 transition hover:-translate-y-0.5 hover:shadow-lg"
-              data-cursor="accent"
-            >
-              Book the stage
+          <nav className="hidden items-center gap-3 text-sm font-semibold text-white md:flex">
+            {[{ label: "Spaces", href: "#spaces" }, { label: "Packages", href: "#packages" }, { label: "Book", href: "#contact" }].map(
+              (link) => (
+                <a key={link.href} href={link.href} className="nav-link">
+                  {link.label}
+                </a>
+              ),
+            )}
+            <a href="mailto:hello@sunday.studio" className="rounded-full bg-white px-4 py-2 text-black shadow-sm" data-cursor="accent">
+              Book time
             </a>
-          </div>
+          </nav>
         </header>
 
-        <section className="section-shell">
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 px-6 py-10 shadow-2xl shadow-white/10 backdrop-blur md:px-12 md:py-14">
-            <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-white/20 blur-3xl" />
-            <div className="absolute -right-16 top-10 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
-            <div className="absolute bottom-[-80px] right-12 h-72 w-72 rotate-12 rounded-full bg-white/10 blur-[72px]" />
-
-            <div className="flex flex-col gap-10 lg:flex-row lg:items-center">
-              <div className="lg:w-[60%]">
-                <span className="tag reveal" style={{ animationDelay: "0.1s" }}>
-                  Lahore&apos;s largest infinity wall · Acoustic ready · Power backup
-                </span>
-                <h1
-                  className="reveal mt-6 text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl"
-                  style={{ animationDelay: "0.18s" }}
-                >
-                  Award-winning production home for black-and-white iconography.
-                </h1>
-                <p
-                  className="reveal mt-4 max-w-2xl text-lg leading-8 text-neutral-300 sm:text-xl"
-                  style={{ animationDelay: "0.28s" }}
-                >
-                  Sunday Studio blends a 26 ft infinity wall, cinema-grade RGBWW lighting, acoustic treatment, and concierge crew
-                  so you can focus on performance, not setup. From music videos to luxury products, we keep every shot art-directed
-                  and on schedule.
-                </p>
-                  <div className="reveal mt-6 flex flex-wrap gap-4" style={{ animationDelay: "0.36s" }}>
-                    <button
-                      className="flex items-center gap-2 rounded-full bg-white px-5 py-3 text-black shadow-lg shadow-white/20 transition hover:-translate-y-0.5 hover:shadow-white/40"
-                      data-cursor="accent"
-                    >
-                      Book a shoot
-                      <span aria-hidden>→</span>
-                    </button>
-                    <a
-                      href="#specs"
-                      className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-white backdrop-blur transition hover:-translate-y-0.5 hover:border-white/60"
-                      data-cursor="accent"
-                    >
-                      View stage specs
-                    </a>
-                  </div>
-                  <div className="reveal mt-8 grid gap-4 text-sm text-white sm:grid-cols-3" style={{ animationDelay: "0.45s" }}>
-                  {[
-                    { label: "Power", detail: "50kW backup" },
-                    { label: "Control", detail: "DMX + haze ready" },
-                    { label: "Location", detail: "Lahore central" },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-sm shadow-black/40">
-                      <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{item.label}</p>
-                      <p className="text-base font-semibold text-white">{item.detail}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="reveal relative mt-8 flex-1 lg:mt-0" style={{ animationDelay: "0.5s" }}>
-                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 via-black to-black p-4 shadow-2xl shadow-black/50">
-                  <div className="absolute inset-0 opacity-40" aria-hidden>
-                    <div className="blob absolute -left-6 top-4 h-32 w-32 rounded-full bg-white/30" />
-                    <div className="blob absolute bottom-6 right-2 h-28 w-28 rounded-full bg-white/10" />
-                  </div>
-                  <div className="relative rounded-xl border border-white/10 bg-black/60 p-6 text-white shadow-inner">
-                    <div className="flex items-center justify-between text-sm text-neutral-300">
-                      <span>Lighting look library</span>
-                      <span>Monochrome AR</span>
-                    </div>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                      {heroShots.map((shot) => (
-                        <div
-                          key={shot.title}
-                          className="rounded-xl border border-white/10 bg-white/5 p-3 shadow-lg shadow-black/30 backdrop-blur"
-                        >
-                          <div className="h-20 rounded-lg bg-gradient-to-br from-white/40 via-white/10 to-black/60" />
-                          <p className="mt-3 text-sm font-semibold text-white">{shot.title}</p>
-                          <p className="text-xs text-white/70">{shot.subtitle}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/70">
-                      <span className="rounded-full border border-white/10 px-3 py-1">Softboxes</span>
-                      <span className="rounded-full border border-white/10 px-3 py-1">DMX Scenes</span>
-                      <span className="rounded-full border border-white/10 px-3 py-1">Haze-ready</span>
-                      <span className="rounded-full border border-white/10 px-3 py-1">Reflective floors</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="gallery" className="section-shell mt-14">
-          <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
-            <div className="absolute -left-14 top-4 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-            <div className="absolute right-0 bottom-0 h-48 w-48 rounded-full bg-white/5 blur-3xl" />
-            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-              <div className="max-w-xl">
-                <p className="tag">Gallery</p>
-                <h2 className="section-title mt-3">See the stage before you book.</h2>
-                <p className="mt-3 text-lg text-neutral-300">
-                  Latest pulls from our stills, reels, and client lounge. Every tile links to a downloadable look so you can share
-                  with directors and brand leads.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-3 text-sm text-white/80">
-                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">Color + BW references</span>
-                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">Lighting diagrams</span>
-                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">Download links</span>
-                </div>
-              </div>
-
-              <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
-                {galleryShots.map((item) => (
-                  <div
-                    key={item.title}
-                    className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/50 backdrop-blur"
-                  >
-                    <div className="h-28 rounded-xl bg-gradient-to-br from-white/15 via-black/50 to-black" />
-                    <div className="mt-4 flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{item.format}</p>
-                        <h3 className="mt-1 text-lg font-semibold text-white">{item.title}</h3>
-                        <p className="text-sm text-neutral-300">{item.summary}</p>
-                      </div>
-                      <span className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/80">Download set</span>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-white">
-                      {item.tags.map((tag) => (
-                        <span key={tag} className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-shell mt-16">
-          <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_30%),radial-gradient(circle_at_80%_80%,rgba(255,255,255,0.05),transparent_32%)]" aria-hidden />
-            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-              <div className="max-w-xl">
-                <p className="tag">AR Gallery</p>
-                <h2 className="section-title mt-3">Augmented reality gallery in black + white.</h2>
-                <p className="mt-3 text-lg text-neutral-300">
-                  Preview immersive looks before you roll camera. Our AR wall mirrors the infinity curve, letting you scout depth,
-                  shadows, and camera moves straight from the browser or on set.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-3 text-sm text-white/80">
-                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">360° orbit controls</span>
-                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">WebXR ready</span>
-                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">Photo-real reflections</span>
-                </div>
-              </div>
-
-              <div className="relative grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
-                {arGallery.map((scene, idx) => (
-                  <div
-                    key={scene.title}
-                    className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/50 transition hover:-translate-y-1 hover:border-white/40"
-                    style={{ transform: `perspective(900px) translateZ(${6 * (idx + 1)}px)` }}
-                    data-cursor="accent"
-                  >
-                    <div className="relative h-32 overflow-hidden rounded-xl bg-gradient-to-br from-white/15 via-black/70 to-black">
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.18),transparent_35%)] mix-blend-screen" />
-                      <div className="absolute -left-10 bottom-0 h-28 w-28 rotate-12 rounded-full bg-white/10 blur-2xl" />
-                      <div className="absolute right-0 top-0 h-24 w-24 -rotate-6 rounded-full bg-white/5 blur-xl" />
-                      <div className="absolute inset-2 rounded-xl border border-white/10" />
-                      <p className="absolute bottom-3 left-4 text-xs uppercase tracking-[0.2em] text-neutral-300">{scene.depth}</p>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div>
-                        <p className="text-sm uppercase tracking-[0.2em] text-neutral-400">Scene {idx + 1}</p>
-                        <h3 className="mt-1 text-lg font-semibold text-white">{scene.title}</h3>
-                        <p className="text-sm text-neutral-300">{scene.caption}</p>
-                      </div>
-                      <span className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/80">AR ready</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="specs" className="section-shell mt-16">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="tag">Technical confidence</p>
-              <h2 className="section-title mt-3">Infinity Studio specs that stay camera-ready.</h2>
-              <p className="mt-2 max-w-2xl text-lg text-neutral-300">
-                From power to acoustics, every part of Sunday Studio is tuned for long shoot days and demanding crews.
+        <section className="section-shell mt-10">
+          <div className="grid gap-10 rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40 md:grid-cols-[1.1fr_0.9fr]">
+            <div className="flex flex-col gap-6">
+              <span className="pill">Minimal, calm, camera-ready</span>
+              <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl">
+                A stage that feels like a room, not a brochure.
+              </h1>
+              <p className="max-w-2xl text-lg text-neutral-200">
+                Sunday Studio trims the noise: soft gradients, simple cues, and a team that keeps resets smooth. Walk in, pick a
+                lighting look, and start rolling without fighting a busy interface.
               </p>
-            </div>
-            <div className="flex items-center gap-2 text-sm font-semibold text-white">
-              <span className="h-2 w-2 rounded-full bg-white animate-pulse" aria-hidden />
-              Live availability updates
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-6 sm:grid-cols-2">
-            {specs.map((spec, index) => (
-              <div
-                key={spec.title}
-                className="glass-panel relative overflow-hidden rounded-3xl p-6 shadow-lg shadow-black/50"
-                style={{ animationDelay: `${0.06 * index}s` }}
-              >
-                <div className="absolute -right-10 -top-10 h-24 w-24 rounded-full bg-white/10 blur-3xl" />
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 shadow-inner shadow-black/50">
-                    <span className="text-lg">✨</span>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{spec.badge}</p>
-                    <h3 className="text-xl font-semibold text-white">{spec.title}</h3>
-                  </div>
-                </div>
-                <p className="mt-3 text-base leading-relaxed text-neutral-300">{spec.detail}</p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="mailto:hello@sunday.studio"
+                  className="btn-primary"
+                  data-cursor="accent"
+                >
+                  Book a shoot
+                </a>
+                <a href="#packages" className="btn-ghost" data-cursor="accent">
+                  See packages
+                </a>
               </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="amenities" className="section-shell mt-16">
-          <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
-            <div className="absolute -left-10 top-0 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
-            <div className="absolute right-0 bottom-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-            <div className="relative grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-              <div>
-                <p className="tag">Amenities & flow</p>
-                <h2 className="section-title mt-3">Everything on one floor, tuned for momentum.</h2>
-                <p className="mt-3 text-lg text-neutral-300">
-                  Fewer gimmicks, more speed. We simplified motion effects and cursor scripts so the site (and your scout) stay responsive.
-                  On the day, the same principle keeps crew, talent, and clients moving together.
-                </p>
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {amenities.map((item) => (
-                    <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-sm shadow-black/40">
-                      <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{item.label}</p>
-                      <p className="mt-1 text-base font-semibold text-white">{item.detail}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="surface-card p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">Stage checklist</p>
-                    <p className="text-lg font-semibold text-white">Arrive ready, roll faster</p>
+              <div className="grid gap-3 text-sm sm:grid-cols-3">
+                {quickFacts.map((item) => (
+                  <div key={item.label} className="fact-card">
+                    <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{item.label}</p>
+                    <p className="text-base font-semibold text-white">{item.value}</p>
                   </div>
-                  <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs">Updated daily</span>
-                </div>
-                <ul className="mt-4 space-y-3 text-sm text-neutral-200">
-                  {["Freshly painted cyc with taped edge", "Pre-light on your chosen look", "Quiet HVAC + haze clearance", "Crew briefed with call sheet at door"].map((line) => (
-                    <li key={line} className="flex items-start gap-2">
-                      <span className="mt-1 text-lg">✓</span>
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white">
-                  <p className="text-xs uppercase tracking-[0.24em] text-white/70">Lag-free preview</p>
-                  <p className="mt-2 text-base font-semibold">Lean visuals + preloaded assets mean faster browsing and quicker pre-production approvals.</p>
-                </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="surface-card p-6">
+              <div className="flex items-center justify-between text-sm text-neutral-300">
+                <span>Stage preview</span>
+                <span>Soft gradients</span>
+              </div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                {spaces.map((shot) => (
+                  <div key={shot.title} className="mini-card">
+                    <div className="mini-frame" />
+                    <p className="mt-3 text-sm font-semibold text-white">{shot.title}</p>
+                    <p className="text-xs text-white/70">{shot.blurb}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs text-white/70">
+                <span className="chip">Haze-friendly</span>
+                <span className="chip">Reflective floors</span>
+                <span className="chip">Silent HVAC</span>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="section-shell mt-16">
+        <section id="spaces" className="section-shell mt-14">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="tag">Budget clarity</p>
-              <h2 className="section-title mt-2">Pick your momentum. We scale with your launch.</h2>
+              <p className="pill">Spaces</p>
+              <h2 className="section-title">Three zones, one clean flow.</h2>
+              <p className="text-lg text-neutral-200">Pick a look, move between sets, and keep clients nearby.</p>
             </div>
-            <p className="text-sm text-neutral-300">
-              Transparent tiers with crew, power, and lighting included.
-            </p>
+            <p className="text-sm text-neutral-400">Tap or hover to see details.</p>
           </div>
 
-          <div className="mt-8 grid gap-6 lg:grid-cols-3">
-            {budgetTiers.map((tier, index) => (
-              <TiltCard key={tier.label} className="h-full">
-                <div className="surface-card flex h-full flex-col gap-4 p-6" data-cursor="accent">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="h-10 w-10 rounded-xl bg-gradient-to-br from-white to-white/20 shadow-md shadow-white/20" />
-                      <div>
-                        <p className="text-xs uppercase tracking-[0.22em] text-neutral-400">Tier {index + 1}</p>
-                        <h3 className="text-xl font-semibold text-white">{tier.label}</h3>
-                      </div>
+          <div className="mt-6 grid gap-5 sm:grid-cols-3">
+            {spaces.map((space) => (
+              <TiltCard key={space.title} className="h-full">
+                <div className="space-card" data-cursor="accent">
+                  <div className="space-visual" aria-hidden />
+                  <div className="mt-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{space.tag}</p>
+                      <h3 className="mt-1 text-lg font-semibold text-white">{space.title}</h3>
                     </div>
-                    <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">
-                      {tier.range}
-                    </span>
+                    <span className="chip">View</span>
                   </div>
-                  <p className="text-base text-neutral-300">{tier.description}</p>
-                  <div className="flex flex-wrap gap-2 text-sm font-semibold text-white">
-                    {tier.perks.map((perk) => (
-                      <span key={perk} className="rounded-full border border-white/10 bg-white/10 px-3 py-1 shadow-sm shadow-black/40">
-                        {perk}
-                      </span>
-                    ))}
-                  </div>
-                  <button className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-white" data-cursor="accent">
-                    Reserve this tier <span aria-hidden>↗</span>
-                  </button>
+                  <p className="mt-2 text-sm text-neutral-200">{space.blurb}</p>
                 </div>
               </TiltCard>
             ))}
           </div>
         </section>
 
-        <section className="section-shell mt-16">
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 shadow-xl shadow-black/60 backdrop-blur">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div className="max-w-2xl">
-                <p className="tag">Capabilities</p>
-                <h2 className="section-title mt-3">Creative services designed around the stage.</h2>
-                <p className="mt-3 text-lg text-neutral-300">
-                  Bring us a storyboard or start from a spark. Sunday Studio pairs the infinity wall with lighting looks,
-                  motion, and on-set direction that keeps your artists and clients comfortable.
-                </p>
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {services.map((service) => (
-                    <div key={service} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <span className="mt-1 text-lg">●</span>
-                      <p className="text-base font-semibold text-white">{service}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <section id="packages" className="section-shell mt-14">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="pill">Packages</p>
+              <h2 className="section-title">Simple options that cover the essentials.</h2>
+              <p className="text-lg text-neutral-200">Transparent time blocks with crew and power included.</p>
+            </div>
+            <p className="text-sm text-neutral-400">Need something custom? We adjust quickly.</p>
+          </div>
 
-              <div className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 via-black to-black p-1 shadow-2xl shadow-black/60">
-                <div className="absolute -left-6 -top-10 h-40 w-40 rounded-full bg-white/20 blur-3xl" />
-                <div className="absolute right-4 top-10 h-16 w-16 rounded-full bg-white/30 blur-2xl" />
-                <div className="relative m-2 overflow-hidden rounded-2xl border border-white/10 bg-black/60 p-5 text-white shadow-inner">
-                  <div className="flex items-center justify-between text-sm text-white/70">
-                    <span>Live cursor</span>
-                    <span>Interactive stage</span>
+          <div className="mt-6 grid gap-5 lg:grid-cols-3">
+            {packages.map((tier) => (
+              <TiltCard key={tier.title} className="h-full">
+                <div className="package-card" data-cursor="accent">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white">{tier.title}</h3>
+                    <span className="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold text-white">{tier.price}</span>
                   </div>
-                  <div className="mt-4 space-y-4">
-                    <div className="h-28 w-full rounded-xl bg-gradient-to-br from-white/20 via-white/5 to-black/70" />
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="rounded-full border border-white/15 px-3 py-1">Magnetic props</span>
-                      <span className="rounded-full border border-white/15 px-3 py-1">Camera ops</span>
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-left shadow shadow-black/40">
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/70">Client lounge</p>
-                      <p className="mt-2 text-base font-semibold">Private viewing room with live feed & espresso.</p>
-                    </div>
+                  <p className="mt-3 text-sm text-neutral-200">{tier.description}</p>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-white">
+                    {tier.perks.map((perk) => (
+                      <span key={perk} className="chip">
+                        {perk}
+                      </span>
+                    ))}
                   </div>
-                  <p className="mt-4 text-xs uppercase tracking-[0.3em] text-white/70">Sunday Studio — Lahore</p>
                 </div>
+              </TiltCard>
+            ))}
+          </div>
+        </section>
+
+        <section className="section-shell mt-14">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="pill">How it works</p>
+                <h2 className="section-title">A calm booking flow.</h2>
+                <p className="text-lg text-neutral-200">No clutter—just the steps you need to start rolling.</p>
               </div>
+              <a href="mailto:hello@sunday.studio" className="btn-ghost" data-cursor="accent">
+                Talk with a producer
+              </a>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {steps.map((step, idx) => (
+                <div key={step.title} className="step-card">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-sm font-semibold text-white">
+                    {idx + 1}
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-white">{step.title}</h3>
+                  <p className="mt-2 text-sm text-neutral-200">{step.detail}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="contact" className="section-shell mt-16">
-          <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
-            <div className="absolute -left-8 top-0 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
-            <div className="absolute -right-8 bottom-0 h-44 w-44 rounded-full bg-white/10 blur-3xl" />
-            <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
-              <div>
-                <p className="tag">Book time</p>
-                <h2 className="section-title mt-3">Ready to roll cameras?</h2>
-                <p className="mt-3 text-lg text-neutral-300">
-                  Tell us your storyboard, reference clips, and preferred dates. We respond within one business day with
-                  a tailored floor plan, lighting looks, and an all-in quote.
+        <section id="contact" className="section-shell mt-14">
+          <div className="contact-card">
+            <div>
+              <p className="pill">Book time</p>
+              <h2 className="section-title">Tell us your date—we handle the rest.</h2>
+              <p className="mt-3 max-w-2xl text-lg text-neutral-200">
+                Send a storyboard, a playlist, or a single reference image. We reply within one business day with availability,
+                lighting looks, and a clear quote.
+              </p>
+              <div className="mt-5 flex flex-col gap-2 text-base font-semibold text-white">
+                <a href="mailto:hello@sunday.studio" className="flex items-center gap-2" data-cursor="accent">
+                  <span className="chip">Email</span>
+                  hello@sunday.studio
+                </a>
+                <a href="tel:+923094220202" className="flex items-center gap-2" data-cursor="accent">
+                  <span className="chip">Phone</span>
+                  +92 309 4220202
+                </a>
+                <p className="flex items-center gap-2 text-neutral-200">
+                  <span className="chip">Address</span>
+                  Lahore · Model Town Extension
                 </p>
-                <div className="mt-5 flex flex-col gap-3 text-base font-semibold text-white">
-                  <a href="mailto:hello@sunday.studio" className="flex items-center gap-2" data-cursor="accent">
-                    <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">Email</span>
-                    hello@sunday.studio
-                  </a>
-                  <a href="tel:+923094220202" className="flex items-center gap-2" data-cursor="accent">
-                    <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">Phone</span>
-                    +92 309 4220202
-                  </a>
-                  <p className="flex items-center gap-2">
-                    <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold text-white">Address</span>
-                    Lahore · Model Town Extension
-                  </p>
-                </div>
               </div>
+            </div>
 
-              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/60">
-                <div className="flex items-center justify-between text-sm text-neutral-300">
-                  <span>Stage timeline</span>
-                  <span>Concierge</span>
-                </div>
-                <div className="mt-4 space-y-4 text-sm">
-                  {["Pre-light & tech check", "Crew call & blocking", "Shoot day momentum", "Client review & wrap"].map(
-                    (step, idx) => (
-                      <div key={step} className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white font-semibold">
-                          {idx + 1}
-                        </div>
-                        <div>
-                          <p className="text-base font-semibold text-white">{step}</p>
-                          <p className="text-neutral-300">We orchestrate the details so creatives stay in flow.</p>
-                        </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-inner shadow-black/40">
+              <div className="flex items-center justify-between text-sm text-neutral-300">
+                <span>Availability</span>
+                <span>Updated daily</span>
+              </div>
+              <div className="mt-4 space-y-4 text-sm">
+                {["Pre-light & tech check", "Crew call & blocking", "Shoot day momentum", "Client review & wrap"].map(
+                  (step) => (
+                    <div key={step} className="flex items-start gap-3 rounded-xl bg-white/5 p-3">
+                      <span className="mt-1 text-lg">✓</span>
+                      <div>
+                        <p className="text-base font-semibold text-white">{step}</p>
+                        <p className="text-neutral-300">We keep the room calm while you shoot.</p>
                       </div>
-                    ),
-                  )}
+                    </div>
+                  ),
+                )}
+              </div>
+              <div className="mt-5 flex items-center justify-between rounded-2xl bg-gradient-to-r from-white/15 to-white/5 p-4 text-white">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/70">This week</p>
+                  <p className="text-lg font-semibold">2 slots open</p>
                 </div>
-                <div className="mt-5 flex items-center justify-between rounded-2xl bg-gradient-to-r from-white/10 to-white/5 p-4 text-white">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-white/70">Availability</p>
-                    <p className="text-lg font-semibold">This week: 2 slots left</p>
-                  </div>
-                  <button
-                    className="rounded-full border border-white/20 bg-white/90 px-4 py-2 text-sm font-semibold text-black shadow-md shadow-white/30"
-                    data-cursor="accent"
-                  >
-                    Check dates
-                  </button>
-                </div>
+                <a href="mailto:hello@sunday.studio" className="btn-primary" data-cursor="accent">
+                  Check dates
+                </a>
               </div>
             </div>
           </div>
