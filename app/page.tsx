@@ -24,19 +24,22 @@ const spaces = [
 const packages = [
   {
     title: "Package 01",
-    price: "Rs. 50,000 / 06 hours",
-    description: "Best for brand content and compact shoots that need the infinity wall looking pristine.",
+    price: "Rs. 50,000",
+    duration: "06 hours",
+    overview: "Fast brand content days with a spotless white cyc ready when you arrive.",
     perks: [
       "Freshly painted Infinity Wall",
       "Makeup Room & Changing Room",
       "Iron & Iron Stand",
       "Sitting Lounge",
     ],
+    suitedFor: "Product launches, short-form content, tabletop",
   },
   {
     title: "Package 02",
-    price: "Rs. 70,000 / 08 hours",
-    description: "Best for commercials and fashion: more time, more comfort, and the infinity wall locked in.",
+    price: "Rs. 70,000",
+    duration: "08 hours",
+    overview: "More time for commercials and fashion stories with room to reset talent.",
     perks: [
       "Freshly Painted Infinity Wall",
       "Makeup Room & Changing Room",
@@ -44,11 +47,13 @@ const packages = [
       "Sitting Lounge",
       "Ice Boxes & Hangers",
     ],
+    suitedFor: "Commercials, fashion look-books, multi-look shoots",
   },
   {
     title: "Package 03",
-    price: "Rs. 90,000 / 12 hours",
-    description: "Full-day momentum with refreshments and an assistant keeping resets smooth.",
+    price: "Rs. 90,000",
+    duration: "12 hours",
+    overview: "Full-day coverage with refreshments and an assistant to keep momentum steady.",
     perks: [
       "Freshly Painted Infinity Wall",
       "Makeup Room & Changing Room",
@@ -58,6 +63,7 @@ const packages = [
       "Dedicated Studio Assistant",
       "Complimentary Tea",
     ],
+    suitedFor: "Long-format ads, music videos, editorial days",
   },
 ];
 
@@ -385,22 +391,47 @@ export default function Home() {
 
           <div className="mt-6 grid gap-5 lg:grid-cols-3">
             {packages.map((tier) => (
-              <TiltCard key={tier.title} className="h-full">
-                <div className="package-card" data-cursor="accent">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold text-white">{tier.title}</h3>
-                    <span className="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold text-white">{tier.price}</span>
-                  </div>
-                  <p className="mt-3 text-sm text-neutral-200">{tier.description}</p>
-                  <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-white">
-                    {tier.perks.map((perk) => (
-                      <span key={perk} className="chip">
-                        {perk}
-                      </span>
-                    ))}
+              <div key={tier.title} className="h-full">
+                <div className="package-flip" data-cursor="accent" tabIndex={0}>
+                  <div className="package-flip-inner">
+                    <div className="package-face package-front">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-2">
+                          <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">{tier.duration}</p>
+                          <h3 className="text-xl font-semibold text-white">{tier.title}</h3>
+                          <p className="text-sm text-neutral-200">{tier.overview}</p>
+                        </div>
+                        <div className="rounded-2xl bg-white/15 px-3 py-2 text-right text-white">
+                          <p className="text-xs uppercase tracking-[0.14em] text-white/80">Starts at</p>
+                          <p className="text-lg font-semibold leading-tight">{tier.price}</p>
+                        </div>
+                      </div>
+                      <p className="mt-6 text-xs text-neutral-300">Flip to see what’s included.</p>
+                    </div>
+
+                    <div className="package-face package-back">
+                      <div className="flex flex-col gap-3">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.18em] text-white/80">What’s included</p>
+                          <ul className="mt-3 space-y-2 text-sm text-neutral-100">
+                            {tier.perks.map((perk) => (
+                              <li key={perk} className="flex items-start gap-2">
+                                <span className="text-base text-white/70">•</span>
+                                <span>{perk}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-2xl bg-white/10 p-3 text-sm text-white">
+                          <p className="text-xs uppercase tracking-[0.16em] text-white/70">Best for</p>
+                          <p className="mt-1 font-semibold text-white">{tier.suitedFor}</p>
+                        </div>
+                        <p className="text-xs text-neutral-300">Pricing is exclusive of electricity (generator/WAPDA). Overtime: Rs. 5,000 per 30 minutes.</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </TiltCard>
+              </div>
             ))}
           </div>
 

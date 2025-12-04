@@ -226,6 +226,55 @@ main {
   min-height: 220px;
 }
 
+.package-flip {
+  position: relative;
+  min-height: 280px;
+  perspective: 1400px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.38);
+  overflow: hidden;
+}
+
+.package-flip:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 4px;
+}
+
+.package-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 650ms ease;
+}
+
+.package-flip:hover .package-flip-inner,
+.package-flip:focus-visible .package-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.package-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.package-front {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.package-back {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+  transform: rotateY(180deg);
+}
+
 .step-card {
   min-height: 180px;
 }
