@@ -59,7 +59,7 @@ const services = [
 const arGallery = [
   {
     title: "Holographic Reveal",
-    caption: "Layered reflections on the infinity wall", 
+    caption: "Layered reflections on the infinity wall",
     depth: "12.4m volumetric depth",
   },
   {
@@ -75,56 +75,45 @@ const arGallery = [
   {
     title: "Architectural Sweep",
     caption: "AR arches that bend into the cyc",
-    depth: "True-to-scale", 
+    depth: "True-to-scale",
   },
 ];
 
-function CustomCursor() {
-  const [hover, setHover] = useState(false);
-  const [press, setPress] = useState(false);
+const galleryShots = [
+  {
+    title: "Monochrome stage", 
+    summary: "High-key white floor with floating accent lights.",
+    format: "Still + BTS clip",
+    tags: ["RAW + graded", "32-bit EXR", "Lighting notes"],
+  },
+  {
+    title: "Product reflections",
+    summary: "Glossed floor with black-out spill control.",
+    format: "Hero still set",
+    tags: ["Polarizer ready", "Rigged overhead", "Specular control"],
+  },
+  {
+    title: "Movement + haze",
+    summary: "Performer with kinetic light sweeps and DMX trails.",
+    format: "60s spotlight reel",
+    tags: ["Haze cleared", "Wind effects", "Audio safe"],
+  },
+  {
+    title: "Client lounge",
+    summary: "Live feed, espresso bar, and notes display.",
+    format: "Space tour",
+    tags: ["Private review", "Color accurate", "Fast Wi‑Fi"],
+  },
+];
 
-  useEffect(() => {
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-    if (isCoarse) return;
-
-    const move = (event: MouseEvent) => {
-      document.documentElement.style.setProperty("--cursor-x", `${event.clientX}px`);
-      document.documentElement.style.setProperty("--cursor-y", `${event.clientY}px`);
-    };
-
-    const handleHover = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-      const interactive = target?.closest?.("a, button, [data-cursor='accent']");
-      setHover(Boolean(interactive));
-    };
-
-    const down = () => setPress(true);
-    const up = () => setPress(false);
-
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseover", handleHover);
-    window.addEventListener("mousedown", down);
-    window.addEventListener("mouseup", up);
-
-    return () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseover", handleHover);
-      window.removeEventListener("mousedown", down);
-      window.removeEventListener("mouseup", up);
-    };
-  }, []);
-
-  return (
-    <div className="custom-cursor">
-      <div
-        className={`cursor-dot ${hover ? "is-hover" : ""} ${press ? "is-press" : ""}`}
-      />
-      <div
-        className={`cursor-ring ${hover ? "is-hover" : ""} ${press ? "is-press" : ""}`}
-      />
-    </div>
-  );
-}
+const amenities = [
+  { label: "Makeup & wardrobe", detail: "Lit mirrors, steamer, racks, and privacy screens." },
+  { label: "Power & distro", detail: "50kW UPS-backed, 32A + 16A drops with cable runs." },
+  { label: "Crew base", detail: "Production desk, call sheet display, and lounge seating." },
+  { label: "Load-in", detail: "Street-level access with dolly ramp and secure parking." },
+  { label: "Climate & sound", detail: "Quiet HVAC, acoustic panels, and isolation for audio." },
+  { label: "Connectivity", detail: "Hardline fiber, guest Wi‑Fi, and casting monitor feed." },
+];
 
 function ScrollProgressBar() {
   const [progress, setProgress] = useState(0);
@@ -196,7 +185,6 @@ export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
       <ScrollProgressBar />
-      <CustomCursor />
       <div className="gradient-veil" />
       <div className="grid-overlay" />
 
@@ -210,9 +198,11 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden items-center gap-3 text-sm font-semibold text-white md:flex">
-            <a href="tel:+923094220202" className="rounded-full border border-white/20 px-4 py-2 transition hover:border-white/60" data-cursor="accent">
-              Call studio
-            </a>
+            {[{ label: "Gallery", href: "#gallery" }, { label: "Specs", href: "#specs" }, { label: "Amenities", href: "#amenities" }, { label: "Book", href: "#contact" }].map((link) => (
+              <a key={link.href} href={link.href} className="rounded-full px-3 py-2 text-white/80 transition hover:text-white">
+                {link.label}
+              </a>
+            ))}
             <a
               href="mailto:hello@sunday.studio"
               className="rounded-full bg-white px-4 py-2 text-black shadow-md shadow-white/20 transition hover:-translate-y-0.5 hover:shadow-lg"
@@ -314,6 +304,54 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="gallery" className="section-shell mt-14">
+          <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
+            <div className="absolute -left-14 top-4 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+            <div className="absolute right-0 bottom-0 h-48 w-48 rounded-full bg-white/5 blur-3xl" />
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-xl">
+                <p className="tag">Gallery</p>
+                <h2 className="section-title mt-3">See the stage before you book.</h2>
+                <p className="mt-3 text-lg text-neutral-300">
+                  Latest pulls from our stills, reels, and client lounge. Every tile links to a downloadable look so you can share
+                  with directors and brand leads.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3 text-sm text-white/80">
+                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">Color + BW references</span>
+                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">Lighting diagrams</span>
+                  <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1">Download links</span>
+                </div>
+              </div>
+
+              <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
+                {galleryShots.map((item) => (
+                  <div
+                    key={item.title}
+                    className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/50 backdrop-blur"
+                  >
+                    <div className="h-28 rounded-xl bg-gradient-to-br from-white/15 via-black/50 to-black" />
+                    <div className="mt-4 flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{item.format}</p>
+                        <h3 className="mt-1 text-lg font-semibold text-white">{item.title}</h3>
+                        <p className="text-sm text-neutral-300">{item.summary}</p>
+                      </div>
+                      <span className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/80">Download set</span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-white">
+                      {item.tags.map((tag) => (
+                        <span key={tag} className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="section-shell mt-16">
           <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_30%),radial-gradient(circle_at_80%_80%,rgba(255,255,255,0.05),transparent_32%)]" aria-hidden />
@@ -397,6 +435,52 @@ export default function Home() {
                 <p className="mt-3 text-base leading-relaxed text-neutral-300">{spec.detail}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section id="amenities" className="section-shell mt-16">
+          <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
+            <div className="absolute -left-10 top-0 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+            <div className="absolute right-0 bottom-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+            <div className="relative grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+              <div>
+                <p className="tag">Amenities & flow</p>
+                <h2 className="section-title mt-3">Everything on one floor, tuned for momentum.</h2>
+                <p className="mt-3 text-lg text-neutral-300">
+                  Fewer gimmicks, more speed. We simplified motion effects and cursor scripts so the site (and your scout) stay responsive.
+                  On the day, the same principle keeps crew, talent, and clients moving together.
+                </p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {amenities.map((item) => (
+                    <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-sm shadow-black/40">
+                      <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{item.label}</p>
+                      <p className="mt-1 text-base font-semibold text-white">{item.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="surface-card p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">Stage checklist</p>
+                    <p className="text-lg font-semibold text-white">Arrive ready, roll faster</p>
+                  </div>
+                  <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs">Updated daily</span>
+                </div>
+                <ul className="mt-4 space-y-3 text-sm text-neutral-200">
+                  {["Freshly painted cyc with taped edge", "Pre-light on your chosen look", "Quiet HVAC + haze clearance", "Crew briefed with call sheet at door"].map((line) => (
+                    <li key={line} className="flex items-start gap-2">
+                      <span className="mt-1 text-lg">✓</span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white">
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/70">Lag-free preview</p>
+                  <p className="mt-2 text-base font-semibold">Lean visuals + preloaded assets mean faster browsing and quicker pre-production approvals.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -490,7 +574,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section-shell mt-16">
+        <section id="contact" className="section-shell mt-16">
           <div className="glass-panel relative overflow-hidden rounded-3xl p-8">
             <div className="absolute -left-8 top-0 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
             <div className="absolute -right-8 bottom-0 h-44 w-44 rounded-full bg-white/10 blur-3xl" />
