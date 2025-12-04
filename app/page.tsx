@@ -272,7 +272,7 @@ export default function Home() {
         Get a quote on WhatsApp
       </a>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 lg:px-10 lg:pt-12">
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-16 px-5 pb-16 pt-8 sm:px-8 lg:px-10 lg:pt-12">
         <header className="flex items-center justify-between rounded-full border border-white/10 bg-white/5 px-5 py-3 shadow-sm backdrop-blur">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 text-sm font-semibold text-black">
@@ -297,7 +297,7 @@ export default function Home() {
           </nav>
         </header>
 
-        <section className="section-shell mt-10">
+        <section className="section-shell">
           <div className="grid gap-10 rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40 md:grid-cols-[1.15fr_0.85fr]">
             <div className="flex flex-col gap-6">
               <span className="pill">Minimal, calm, camera-ready</span>
@@ -383,7 +383,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="spaces" className="section-shell mt-14">
+        <section id="spaces" className="section-shell">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="pill">Spaces</p>
@@ -393,7 +393,7 @@ export default function Home() {
             <p className="text-sm text-neutral-400">Tap or hover to see details.</p>
           </div>
 
-          <div className="mt-6 grid gap-5 sm:grid-cols-3">
+          <div className="mt-6 grid gap-7 sm:grid-cols-3">
             {spaces.map((space) => (
               <TiltCard key={space.title} className="h-full">
                 <div className="space-card" data-cursor="accent">
@@ -410,10 +410,10 @@ export default function Home() {
               </TiltCard>
             ))}
           </div>
-        </section>
+          </section>
 
-        <section className="section-shell mt-14">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
+          <section className="section-shell">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="pill">Infinity Studio</p>
@@ -423,7 +423,7 @@ export default function Home() {
               <div className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white">Fresh paint before every booking</div>
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[
                 { label: "Total Seamless Length", value: "105 ft (≈ 32 m)" },
                 { label: "Stage Area", value: "50 ft wide × 35 ft deep (≈ 15.2 m × 10.7 m)" },
@@ -441,7 +441,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="packages" className="section-shell mt-14">
+        <section id="packages" className="section-shell">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="pill">Packages</p>
@@ -451,7 +451,7 @@ export default function Home() {
             <p className="text-sm text-neutral-400">Need something custom? We adjust quickly.</p>
           </div>
 
-          <div className="mt-6 grid gap-5 lg:grid-cols-3">
+          <div className="mt-6 grid gap-7 lg:grid-cols-3">
             {packages.map((tier) => (
               <div key={tier.title} className="h-full">
                 <div className="package-flip" data-cursor="accent" tabIndex={0}>
@@ -504,7 +504,7 @@ export default function Home() {
           </p>
         </section>
 
-        <section className="section-shell mt-14">
+        <section className="section-shell">
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
@@ -517,7 +517,7 @@ export default function Home() {
               </a>
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <div className="mt-6 grid gap-6 md:grid-cols-3">
               {steps.map((step, idx) => (
                 <div key={step.title} className="step-card">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-sm font-semibold text-white">
@@ -531,7 +531,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="section-shell mt-14">
+        <section id="contact" className="section-shell">
           <div className="contact-card">
             <div>
               <p className="pill">Book time</p>
@@ -556,7 +556,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid gap-4">
+            <div className="card-stack">
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-inner shadow-black/40">
                 <div className="flex items-center justify-between text-sm text-neutral-300">
                   <span>Availability</span>
@@ -661,49 +661,49 @@ export default function Home() {
               </form>
             </div>
           </div>
-        </section>
+          </section>
 
-        <section className="section-shell mt-14">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="pill">Other Services</p>
-                <h2 className="section-title">Lighting, grip, and generators on call.</h2>
-                <p className="text-lg text-neutral-200">Book everything with one message—no scavenger hunts.</p>
+          <section className="section-shell">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/40">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="pill">Other Services</p>
+                  <h2 className="section-title">Lighting, grip, and generators on call.</h2>
+                  <p className="text-lg text-neutral-200">Book everything with one message—no scavenger hunts.</p>
+                </div>
+                <a href="tel:+923000846656" className="btn-primary" data-cursor="accent">
+                  Call for rates
+                </a>
               </div>
-              <a href="tel:+923000846656" className="btn-primary" data-cursor="accent">
-                Call for rates
-              </a>
+
+              <div className="mt-6 grid gap-8 md:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-inner shadow-black/40">
+                  <p className="text-sm uppercase tracking-[0.22em] text-white/70">Lighting, Grip & Accessories</p>
+                  <ul className="mt-4 space-y-2 text-base text-white/90">
+                    {["Storm LS 1200d Pro", "Storm LS 1200x pro.", "LS 600d Pro.", "LS 600x.", "Aputure 2600x.", "Spot lens for 600.", "Spot lens for 1200.", "Godox flash.", "Complete Accessories & Grip."].map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="mt-1 text-lg text-white/70">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-inner shadow-black/40">
+                  <p className="text-sm uppercase tracking-[0.22em] text-white/70">Generators (operator included, fuel excluded)</p>
+                  <ul className="mt-4 space-y-2 text-base text-white/90">
+                    {["25 kVA", "50 kVA", "60 kVA", "75 kVA"].map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="mt-1 text-lg text-white/70">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-5 rounded-2xl bg-white/10 p-4 text-sm text-white/90">Operator included; fuel will be billed based on usage.</div>
+                </div>
+              </div>
             </div>
-
-            <div className="mt-6 grid gap-8 md:grid-cols-2">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-inner shadow-black/40">
-                <p className="text-sm uppercase tracking-[0.22em] text-white/70">Lighting, Grip & Accessories</p>
-                <ul className="mt-4 space-y-2 text-base text-white/90">
-                  {["Storm LS 1200d Pro", "Storm LS 1200x pro.", "LS 600d Pro.", "LS 600x.", "Aputure 2600x.", "Spot lens for 600.", "Spot lens for 1200.", "Godox flash.", "Complete Accessories & Grip."].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <span className="mt-1 text-lg text-white/70">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 shadow-inner shadow-black/40">
-                <p className="text-sm uppercase tracking-[0.22em] text-white/70">Generators (operator included, fuel excluded)</p>
-                <ul className="mt-4 space-y-2 text-base text-white/90">
-                  {["25 kVA", "50 kVA", "60 kVA", "75 kVA"].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <span className="mt-1 text-lg text-white/70">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-5 rounded-2xl bg-white/10 p-4 text-sm text-white/90">Operator included; fuel will be billed based on usage.</div>
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
       </div>
     </main>
   );
